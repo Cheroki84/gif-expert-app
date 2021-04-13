@@ -1,43 +1,31 @@
 import { useEffect, useState } from "react";
+import { getGifs } from "../helpers/getGifs";
 import GifGridItem from "./GifGridItem";
 
-const GifGrid = ({ gifRender }) => {
+const GifGrid = ({ category }) => {
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        getGifs();
-    }, [])
-    const getGifs = async () => {
-
-        const url = 'https://api.giphy.com/v1/gifs/search?q=pokemon&limit=10&api_key=b2PjivnhvJXps3cGiDwMVRRdYvSkcGHa';
-        const resp = await fetch(url);
-        const { data } = await resp.json();
-
-        const gifs = data.map(img => {
-            return {
-                id: img.id,
-                title: img.title,
-                url: img.images?.downsized_medium.url
-            }
-        })
-        console.log(gifs)
-        setImages(gifs);
-    }
+        getGifs(category).then(setImages); // getGifs(category).then(imgs => setImages(imgs));
+    }, [category])
+    
 
     return (
-        <div>
-            <h3>{gifRender}</h3>
+        <>
+            <h3>{category}</h3>
+            <div className="card-grid">
 
-            {
-            images.map(img => (
-                <GifGridItem 
-                key={img.id}
-                {...img}
-                />
-            ))
-            }
+                {
+                    images.map(img => (
+                        <GifGridItem
+                            key={img.id}
+                            {...img}
+                        />
+                    ))
+                }
 
-        </div>
+            </div>
+        </>
     )
 }
 
