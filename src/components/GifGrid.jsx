@@ -1,11 +1,17 @@
+import { useEffect, useState } from "react";
+import GifGridItem from "./GifGridItem";
 
-const GifGrid = ({gifRender}) => {
+const GifGrid = ({ gifRender }) => {
+    const [images, setImages] = useState([]);
 
-    const getGifs = async() => {
+    useEffect(() => {
+        getGifs();
+    }, [])
+    const getGifs = async () => {
 
         const url = 'https://api.giphy.com/v1/gifs/search?q=pokemon&limit=10&api_key=b2PjivnhvJXps3cGiDwMVRRdYvSkcGHa';
         const resp = await fetch(url);
-        const {data} = await resp.json();
+        const { data } = await resp.json();
 
         const gifs = data.map(img => {
             return {
@@ -15,13 +21,22 @@ const GifGrid = ({gifRender}) => {
             }
         })
         console.log(gifs)
+        setImages(gifs);
     }
-
-    getGifs();
 
     return (
         <div>
             <h3>{gifRender}</h3>
+
+            {
+            images.map(img => (
+                <GifGridItem 
+                key={img.id}
+                {...img}
+                />
+            ))
+            }
+
         </div>
     )
 }
